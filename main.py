@@ -89,7 +89,7 @@ def train_step(model, x, y):
         
         #PSNR
         
-				psnr = 10 * log10(1 / ((fake_hr - y) ** 2).item())
+	psnr = 10 * log10(1 / ((fake_hr - y) ** 2).item())
 
     # Backprop on Generator
     gen_grads = gen_tape.gradient(perceptual_loss, model.generator.trainable_variables)
