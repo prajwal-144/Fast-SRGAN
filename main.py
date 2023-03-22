@@ -3,7 +3,7 @@ from dataloader import DataLoader
 from model import FastSRGAN
 import tensorflow as tf
 import os
-from math import log10
+#from math import log10
 
 parser = ArgumentParser()
 parser.add_argument('--image_dir', type=str, help='Path to high resolution image directory.')
@@ -89,7 +89,7 @@ def train_step(model, x, y):
         d_loss = tf.add(valid_loss, fake_loss)
         
         #PSNR
-        psnr = 10 * log10(1 / ((fake_hr - y) ** 2).item())
+        #psnr = 10 * log10(1 / ((fake_hr - y) ** 2).item())
 
     # Backprop on Generator
     gen_grads = gen_tape.gradient(perceptual_loss, model.generator.trainable_variables)
@@ -99,7 +99,7 @@ def train_step(model, x, y):
     disc_grads = disc_tape.gradient(d_loss, model.discriminator.trainable_variables)
     model.disc_optimizer.apply_gradients(zip(disc_grads, model.discriminator.trainable_variables))
 
-    return d_loss, adv_loss, content_loss, mse_loss, psnr
+    return d_loss, adv_loss, content_loss, mse_loss
 
 
 def train(model, dataset, log_iter, writer):
@@ -123,7 +123,7 @@ def train(model, dataset, log_iter, writer):
                 tf.summary.scalar('Content Loss', content_loss, step=model.iterations)
                 tf.summary.scalar('MSE Loss', mse_loss, step=model.iterations)
                 tf.summary.scalar('Discriminator Loss', disc_loss, step=model.iterations)
-                tf.summary.scalar('PSNR', psnr, step=model.iterations)
+                #tf.summary.scalar('PSNR', psnr, step=model.iterations)
                 tf.summary.image('Low Res', tf.cast(255 * x, tf.uint8), step=model.iterations)
                 tf.summary.image('High Res', tf.cast(255 * (y + 1.0) / 2.0, tf.uint8), step=model.iterations)
                 tf.summary.image('Generated', tf.cast(255 * (model.generator.predict(x) + 1.0) / 2.0, tf.uint8),
@@ -160,7 +160,7 @@ def main():
     # Run training.
     for _ in range(args.epochs):
         train(gan, ds, args.save_iter, train_summary_writer)
-        print(psnr)
+        #print(psnr)
 
 
 if __name__ == '__main__':
