@@ -3,6 +3,7 @@ from dataloader import DataLoader
 from model import FastSRGAN
 import tensorflow as tf
 import os
+from math import log10
 
 parser = ArgumentParser()
 parser.add_argument('--image_dir', type=str, help='Path to high resolution image directory.')
@@ -88,8 +89,7 @@ def train_step(model, x, y):
         d_loss = tf.add(valid_loss, fake_loss)
         
         #PSNR
-        
-	psnr = 10 * log10(1 / ((fake_hr - y) ** 2).item())
+        psnr = 10 * log10(1 / ((fake_hr - y) ** 2).item())
 
     # Backprop on Generator
     gen_grads = gen_tape.gradient(perceptual_loss, model.generator.trainable_variables)
